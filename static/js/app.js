@@ -30,9 +30,17 @@ function BellyButton(jsonData) {
             .text(function (d) {
                 return d.id
             });
-            // .html(function (d) {
-            //     return `<option value=${d.id}>${d.id}</option>`
-            // });
+     
+        // On change to html DOM tag, use optionChanged function
+        d3.selectAll("#selDataset").on("change", optionChanged);
+
+        // define optionChanged
+        function optionChanged() {
+            // assign value of selected data to variable
+            var id = d3.select("#selDataset").property("value");
+
+            console.log("Selected Subject", id)
+        };
 
 });
 
