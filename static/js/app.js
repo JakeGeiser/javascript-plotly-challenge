@@ -3,21 +3,8 @@ function BellyButton(jsonData) {
 
     // access the the data, then use it
     d3.json(jsonData).then(function (data) {
-        console.log("data.samples")
-        console.log(data.samples);
-
-        // map the needed data
-        // console.log("otu_ids")
-        // var otu_ids = data.samples.map(ele => ele.otu_ids);
-        // console.log(otu_ids);
-
-        // console.log("otu_labels")
-        // var otu_labels = data.samples.map(ele => ele.otu_labels);
-        // console.log(otu_labels);
-
-        // console.log("sample_values")
-        // var sample_values = data.samples.map(ele => ele.sample_values);
-        // console.log(sample_values);
+        console.log("data")
+        console.log(data);
 
         // generate select option for all subjects
         var options = d3.select("#selDataset").selectAll("option");
@@ -40,7 +27,36 @@ function BellyButton(jsonData) {
             var id = d3.select("#selDataset").property("value");
 
             console.log("Selected Subject", id)
+
+            barChart(id);
         };
+
+        function barChart(idNum) {
+            // grab demographics
+            console.log("DEMOGRAPHIC");
+            var demographic = data.metadata.find(ele => ele.id == idNum);
+            console.log(demographic);
+            // samples
+            console.log("SAMPLES");
+            var samples = data.samples.find(ele => ele.id == idNum)
+            console.log(samples);
+
+            // define data used for plot
+            var traceData = [{
+                type: 'bar',
+                orientation: 'h',
+                x: [10,20],
+                y: ["biden","trump"],
+                text: ["slow Joe","deplorable"],
+                transforms: [{
+                    type: 'sort',
+                    target: 'x',
+                    order: 'ascending'
+                }]
+            }];
+
+            Plotly.newPlot("bar",traceData)
+        }
 
 });
 
