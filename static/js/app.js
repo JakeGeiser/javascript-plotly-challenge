@@ -135,7 +135,21 @@ function BellyButton(jsonData) {
             // Plot the bubble chart
             Plotly.newPlot("bubble",traceDataBubble,bubbleLayout);
 
-        }
+            // Define data for number guage
+            var traceDataGauge = [{
+                domain: { x: [0, 1], y: [0, 1] },
+                value: metaData.wfreq,
+                title: { text: "Belly Button Washing Frequency" },
+                type: "indicator",
+                mode: "gauge+number",
+                gauge: {
+                    axis: {range: [null,9]}
+                }
+                }];
+            // Plot the Gauge chart
+            Plotly.newPlot("gauge",traceDataGauge);
+            
+        };
 
 });
 
