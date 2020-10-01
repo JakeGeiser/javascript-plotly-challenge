@@ -52,11 +52,13 @@ function BellyButton(jsonData) {
             var samples = data.samples.find(ele => ele.id == idNum)
             console.log(samples);
             
-            samples.otu_ids = samples.otu_ids.map(ele => `OTU ${ele}`)
+            var otuIds = samples.otu_ids.map(ele => `OTU ${ele}`)
 
             
-            // reorganize demographic so its easy to append to a list
+            // reorganize demographic so its easy to append to a table
             var demographic = Object.entries(metaData).map((ele) => `${ele[0]}: ${ele[1]}`);
+            // remove old tables
+            d3.selectAll("#sample-metadata").select("table").remove()
             // Append Demographic list of info as table due to list not looking right
             var list = d3.select("#sample-metadata").append("table")
             list.selectAll("tr")
@@ -88,7 +90,7 @@ function BellyButton(jsonData) {
                 type: 'bar',
                 orientation: 'h',
                 x: samples.sample_values,
-                y: samples.otu_ids,
+                y: otuIds,
                 text: samples.otu_labels,
                 transforms: [{
                     type: 'sort',
@@ -101,8 +103,38 @@ function BellyButton(jsonData) {
                     value: findVal(samples.sample_values,bins)
                 }]
             }];
+            // define layout for bar chart
+            var barLayout = {
+                xaxis: {
+                    title: "Population"
+                }
+            };
+            // Plot the bar chart
+            Plotly.newPlot("bar",traceDataBar,barLayout)
 
-            Plotly.newPlot("bar",traceDataBar)
+            // define data used for bubble chart
+            var traceDataBubble = [{
+                x: samples.otu_ids,
+                y: samples.sample_values,
+                mode: "markers",
+                text: samples.otu_labels,
+                marker: {
+                    color: samples.otu_ids,
+                    size: samples.sample_values
+                }
+            }];
+            // define layout for bubble chart
+            var bubbleLayout = {
+                xaxis: {
+                    title: 'OTU ID'
+                },
+                yaxis: {
+                    title: 'Population'
+                }
+            };
+            // Plot the bubble chart
+            Plotly.newPlot("bubble",traceDataBubble,bubbleLayout);
+
         }
 
 });
