@@ -57,12 +57,16 @@ function BellyButton(jsonData) {
             
             // reorganize demographic so its easy to append to a list
             var demographic = Object.entries(metaData).map((ele) => `${ele[0]}: ${ele[1]}`);
-            // Append Demographic list of info
-            var ul = d3.select("#sample-metadata").append('ul').attr("style", "list-style-type:none");
-            ul.data(demographic)
+            // Append Demographic list of info as table due to list not looking right
+            var list = d3.select("#sample-metadata").append("table")
+            list.selectAll("tr")
+                .data(demographic)
                 .enter()
-                .append("li")
-                .text((d) => d);
+                .append("tr")
+                .attr("class","demo-info")
+                .html(function (d) {
+                    return `<td>${d}</td>`
+                })
 
             console.log("DEMOGRAPHIC LIST");
             console.log(demographic);
