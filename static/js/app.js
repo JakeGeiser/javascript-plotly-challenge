@@ -17,10 +17,14 @@ function BellyButton(jsonData) {
             .text(function (d) {
                 return d.id
             });
-     
+
+        // generate initial charts
+        var firstId = data.names[0]
+        getCharts(firstId,10)
+        
         // On change to html DOM tag, use optionChanged function
         d3.selectAll("#selDataset").on("change", optionChanged);
-
+        
         // define optionChanged
         function optionChanged() {
             // assign value of selected data to variable
@@ -28,10 +32,11 @@ function BellyButton(jsonData) {
 
             console.log("Selected Subject", id)
 
-            getCharts(id,10);
+            // generate charts on change
+            getCharts(id,10); // getCharts function defined below
         };
 
-        // funtion to generate bar chart
+        // funtion to generate all charts and demographic info
         function getCharts(idNum,bins) {
             // grab demographics
             console.log("DEMOGRAPHIC");
