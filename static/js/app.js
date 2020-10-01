@@ -28,30 +28,50 @@ function BellyButton(jsonData) {
 
             console.log("Selected Subject", id)
 
-            barChart(id);
+            getCharts(id,10);
         };
 
-        function barChart(idNum) {
+        // funtion to generate bar chart
+        function getCharts(idNum,bins) {
             // grab demographics
             console.log("DEMOGRAPHIC");
             var demographic = data.metadata.find(ele => ele.id == idNum);
             console.log(demographic);
-            // samples
+
+            // grab samples
             console.log("SAMPLES");
             var samples = data.samples.find(ele => ele.id == idNum)
             console.log(samples);
+            
+            samples.otu_ids = samples.otu_ids.map(ele => `OTU ${ele}`)
 
+            function findVal(array,bin) {
+                // param - array: input array you want to find value for
+                // param - bins: input number of elements you want to keep
+                if (array.length >= bin) {
+                    return (array.sort((a,b)=>b-a)[bin-1])
+                }
+                else {
+                    return array.length
+                }
+            }
+            
             // define data used for plot
             var traceData = [{
                 type: 'bar',
                 orientation: 'h',
-                x: [10,20],
-                y: ["biden","trump"],
-                text: ["slow Joe","deplorable"],
+                x: samples.sample_values,
+                y: samples.otu_ids,
+                text: samples.otu_labels,
                 transforms: [{
                     type: 'sort',
                     target: 'x',
                     order: 'ascending'
+                }, {
+                    type: 'filter',
+                    target: 'x',
+                    operation: '>=',
+                    value: findVal(samples.sample_values,bins)
                 }]
             }];
 
