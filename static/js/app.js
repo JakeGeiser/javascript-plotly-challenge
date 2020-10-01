@@ -112,6 +112,9 @@ function BellyButton(jsonData) {
             // Plot the bar chart
             Plotly.newPlot("bar",traceDataBar,barLayout)
 
+            // defin maxID for use in making colors scale consistently
+            var maxID = samples.otu_ids.reduce((a,b) => Math.max(a,b));
+
             // define data used for bubble chart
             var traceDataBubble = [{
                 x: samples.otu_ids,
@@ -119,7 +122,8 @@ function BellyButton(jsonData) {
                 mode: "markers",
                 text: samples.otu_labels,
                 marker: {
-                    color: samples.otu_ids,
+                    color: samples.otu_ids.map(ele => 
+                        `hsl(${ele/maxID * 360}, 50%, 50%)`),
                     size: samples.sample_values
                 }
             }];
@@ -135,19 +139,30 @@ function BellyButton(jsonData) {
             // Plot the bubble chart
             Plotly.newPlot("bubble",traceDataBubble,bubbleLayout);
 
-            // Define data for number guage
+            d3.select("#gaugediv").append("h2").text("Test")
+            // Define data for number gauge
             var traceDataGauge = [{
                 domain: { x: [0, 1], y: [0, 1] },
                 value: metaData.wfreq,
-                title: { text: "Belly Button Washing Frequency" },
+                title: { text: "<b>Belly Button Washing Frequency</b> <br> Scrubs per Week" },
                 type: "indicator",
                 mode: "gauge+number",
                 gauge: {
                     axis: {range: [null,9]}
                 }
                 }];
+            // Define layout for number gauge
+            var gaugeLayout = {
+                // title: "Belly Button Washing Fequency",
+                xaxis: {
+                    title: "Scrubs per Week"
+                },
+                width: 500, 
+                height: 400, 
+                margin: { t: 0, b: 0 }
+            };
             // Plot the Gauge chart
-            Plotly.newPlot("gauge",traceDataGauge);
+            Plotly.newPlot("gauge",traceDataGauge,gaugeLayout);
             
         };
 
