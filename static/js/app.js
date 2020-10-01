@@ -38,10 +38,14 @@ function BellyButton(jsonData) {
 
         // funtion to generate all charts and demographic info
         function getCharts(idNum,bins) {
+            // param - idNum: test subject id number
+            // param - bins: input number of elements you want to keep
+
+
             // grab demographics
-            console.log("DEMOGRAPHIC");
-            var demographic = data.metadata.find(ele => ele.id == idNum);
-            console.log(demographic);
+            console.log("METADATA");
+            var metaData = data.metadata.find(ele => ele.id == idNum);
+            console.log(metaData);
 
             // grab samples
             console.log("SAMPLES");
@@ -49,6 +53,20 @@ function BellyButton(jsonData) {
             console.log(samples);
             
             samples.otu_ids = samples.otu_ids.map(ele => `OTU ${ele}`)
+
+            
+            // reorganize demographic so its easy to append to a list
+            var demographic = Object.entries(metaData).map((ele) => `${ele[0]}: ${ele[1]}`);
+            // Append Demographic list of info
+            var ul = d3.select("#sample-metadata").append('ul').attr("style", "list-style-type:none");
+            ul.data(demographic)
+                .enter()
+                .append("li")
+                .text((d) => d);
+
+            console.log("DEMOGRAPHIC LIST");
+            console.log(demographic);
+            
 
             function findVal(array,bin) {
                 // param - array: input array you want to find value for
@@ -62,7 +80,7 @@ function BellyButton(jsonData) {
             }
             
             // define data used for plot
-            var traceData = [{
+            var traceDataBar = [{
                 type: 'bar',
                 orientation: 'h',
                 x: samples.sample_values,
@@ -80,7 +98,7 @@ function BellyButton(jsonData) {
                 }]
             }];
 
-            Plotly.newPlot("bar",traceData)
+            Plotly.newPlot("bar",traceDataBar)
         }
 
 });
